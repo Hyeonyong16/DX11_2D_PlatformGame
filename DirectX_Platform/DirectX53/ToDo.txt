@@ -1,0 +1,17 @@
+1. 충돌처리
+
+2. TaskMgr
+  - 오브젝트 생성 및 삭제, 레벨 변경 지연처리
+
+3. Animation( Flipbook, Sprite, FlipbookComponent )
+
+4. TileMap
+  - 구조화버퍼
+
+5. ParticleSystem( ComputeShader )
+ - 무수히 많은 입자 시뮬레이션
+
+6. PostProcess
+
+
+

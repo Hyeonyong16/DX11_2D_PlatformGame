@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+/DirectX_Platform/DirectX53/.vs
+/DirectX_Platform/DirectX53/Project/Engine/x64
