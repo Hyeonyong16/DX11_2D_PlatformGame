@@ -13,8 +13,12 @@
 #include "CPlayerScript.h"
 #include "CCameraMoveScript.h"
 #include "CPlatformScript.h"
+#include "CDropTriggerScript.h"
+#include "CBackgroundScript.h"
 
 #include "CSetColorCS.h"
+
+void CreatePlatform(wstring _Name, Vec3 _RelativePos, Vec3 _RelativeScale, CLevel* _CurLevel);
 
 CLevelMgr::CLevelMgr()
 	: m_CurLevel(nullptr)
@@ -49,8 +53,8 @@ void CLevelMgr::Init()
 
 	pCamObj->Transform()->SetRelativePos(0.f, 0.f, -100.f);
 
-	pCamObj->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
-	//pCamObj->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
+	//pCamObj->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
+	pCamObj->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
 	pCamObj->Camera()->SetPriority(0); // 메인 카메라로 설정
 	pCamObj->Camera()->CheckLayerAll();
 	pCamObj->Camera()->CheckLayer(31);
@@ -71,7 +75,9 @@ void CLevelMgr::Init()
 	pObject->Transform()->SetRelativePos(0.f, 0.f, 100.f);
 	pObject->Transform()->SetRelativeScale(100.f, 100.f, 1.f);
 
-	pObject->FlipbookRender()->AddFlipbook(0.f, CAssetMgr::GetInst()->FindAsset<CFlipbook>(L"LinkFlipbook"));
+	pObject->FlipbookRender()->AddFlipbook(0.f, CAssetMgr::GetInst()->FindAsset<CFlipbook>(L"LinkFlipbook"));		//0
+	pObject->FlipbookRender()->AddFlipbook(1.f, CAssetMgr::GetInst()->FindAsset<CFlipbook>(L"LinkFlipbookLeft"));	//1
+	pObject->FlipbookRender()->AddFlipbook(2.f, CAssetMgr::GetInst()->FindAsset<CFlipbook>(L"LinkFlipbookRight"));	//2
 
 	//pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
 	//pObject->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std2DMtrl"));
@@ -79,12 +85,15 @@ void CLevelMgr::Init()
 	pObject->FlipbookRender()->Play(0, 15, true);
 
 	pObject->Collider2D()->SetIndependentScale(true);
-	pObject->Collider2D()->SetScale(Vec2(110.f, 110.f));
+	pObject->Collider2D()->SetScale(Vec2(50.f, 50.f));
 	pObject->Collider2D()->SetOffset(Vec2(0.f, 0.f));
 
 	//Ptr<CMaterial> pMtrl = pObject->MeshRender()->GetMaterial();
 	//pMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->Load<CTexture>(L"Character", L"Texture\\Character.png"));
 	//pMtrl->SetScalarParam(INT_0, 0);
+
+	CCameraMoveScript* pCameraScript = (CCameraMoveScript*)pCamObj->GetScripts().back();
+	pCameraScript->SetTarget(pObject);
 
 	// Child Object
 	/*
@@ -131,8 +140,41 @@ void CLevelMgr::Init()
 	m_CurLevel->AddGameObject(pObject, 0, false);
 	*/
 
-	CGameObject* pPlatform = new CGameObject;
-	pPlatform->SetName(L"Platform");
+	// Level 에 넣을 GameObject 생성
+	CreatePlatform(L"Platform", Vec3(0.f, -300.0f, 100.f), Vec3(600.f, 10.f, 1.f), m_CurLevel);
+	CreatePlatform(L"Platform1", Vec3(500.f, -200.0f, 100.f), Vec3(200.f, 10.f, 1.f), m_CurLevel);
+	CreatePlatform(L"Platform2", Vec3(810.f, -230.0f, 100.f), Vec3(50.f, 10.f, 1.f), m_CurLevel);
+	CreatePlatform(L"Platform3", Vec3(1030.f, -180.0f, 100.f), Vec3(100.f, 10.f, 1.f), m_CurLevel);
+	CreatePlatform(L"Platform4", Vec3(1250.f, -250.0f, 100.f), Vec3(50.f, 10.f, 1.f), m_CurLevel);
+	CreatePlatform(L"Platform5", Vec3(1400.f, -150.0f, 100.f), Vec3(50.f, 10.f, 1.f), m_CurLevel);
+	CreatePlatform(L"Platform6", Vec3(1500.f, -50.0f, 100.f), Vec3(50.f, 10.f, 1.f), m_CurLevel);
+	CreatePlatform(L"Platform7", Vec3(1700.f, -250.0f, 100.f), Vec3(50.f, 10.f, 1.f), m_CurLevel);
+
+	// 배경
+	CGameObject* pBackground = new CGameObject;
+	pBackground->SetName(L"Background");
+
+	pBackground->AddComponent(new CTransform);
+	pBackground->AddComponent(new CMeshRender);
+	pBackground->AddComponent(new CBackgroundScript);
+
+	pBackground->Transform()->SetRelativePos(0.f, 0.f, 150.f);
+	Vec2 vResolution = CDevice::GetInst()->GetRenderResolution();
+	pBackground->Transform()->SetRelativeScale(vResolution.x, vResolution.y, 1.f);
+
+	pBackground->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	pBackground->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std2DMtrl"));
+
+	Ptr<CMaterial> pMtrl = pBackground->MeshRender()->GetMaterial();
+	pMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->Load<CTexture>(L"Character", L"Texture\\background.png"));
+	pMtrl->SetScalarParam(INT_0, 0);
+
+	CBackgroundScript* pBackgroundScript = (CBackgroundScript*)pBackground->GetScripts().back();
+	pBackgroundScript->SetTarget(pCamObj);
+
+	m_CurLevel->AddGameObject(pBackground, 8, true);
+
+	/*pPlatform->SetName(L"Platform");
 
 	pPlatform->AddComponent(new CTransform);
 	pPlatform->AddComponent(new CCollider2D);
@@ -143,27 +185,45 @@ void CLevelMgr::Init()
 
 	pPlatform->Collider2D()->SetIndependentScale(false);
 
-	m_CurLevel->AddGameObject(pPlatform, 7, true);
+	m_CurLevel->AddGameObject(pPlatform, 7, true);*/
+
 
 	// Level 에 넣을 GameObject 생성
-	//pObject = new CGameObject;
-	//pObject->SetName(L"Monster");
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CFlipbookRender);
-	//pObject->AddComponent(new CCollider2D);
+	CGameObject* pDropTrigger = new CGameObject;
+	pDropTrigger->SetName(L"pDropTrigger");
 
-	//pObject->Transform()->SetRelativePos(0.f, 300.f, 100.f);
-	//pObject->Transform()->SetRelativeScale(300.f, 300.f, 1.f);
+	pDropTrigger->AddComponent(new CTransform);
+	pDropTrigger->AddComponent(new CCollider2D);
+	pDropTrigger->AddComponent(new CDropTriggerScript);
 
-	//pObject->FlipbookRender()->AddFlipbook(0, CAssetMgr::GetInst()->FindAsset<CFlipbook>(L"LinkFlipbook"));
-	////pObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	////pObject->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std2DMtrl"));
+	pDropTrigger->Transform()->SetRelativePos(0.f, -700.0f, 100.f);
+	pDropTrigger->Transform()->SetRelativeScale(10000.f, 100.f, 1.f);
 
-	//pObject->FlipbookRender()->Play(0, 15, true);
+	pDropTrigger->Collider2D()->SetIndependentScale(false);
 
-	//// 오브젝트를 0번 레이어에 추가
-	//m_CurLevel->AddGameObject(pObject, 5, false);
+	m_CurLevel->AddGameObject(pDropTrigger, 7, true);
 
+	// Level 에 넣을 GameObject 생성
+	/*
+	pObject = new CGameObject;
+	pObject->SetName(L"Monster");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CTileRender);
+
+	pObject->Transform()->SetRelativePos(0.f, 300.f, 100.f);
+	pObject->Transform()->SetRelativeScale(300.f, 300.f, 1.f);
+
+	pObject->TileRender()->SetColRow(10, 10);
+	pObject->TileRender()->SetTileSize(Vec2(64.f, 64.f));
+	pObject->TileRender()->SetSprite(0, 0, CAssetMgr::GetInst()->FindAsset<CSprite>(L"TileSprite_0"));
+	pObject->TileRender()->SetSprite(0, 1, CAssetMgr::GetInst()->FindAsset<CSprite>(L"TileSprite_1"));
+	pObject->TileRender()->SetSprite(0, 2, CAssetMgr::GetInst()->FindAsset<CSprite>(L"TileSprite_2"));
+	pObject->TileRender()->SetSprite(0, 3, CAssetMgr::GetInst()->FindAsset<CSprite>(L"TileSprite_3"));
+	pObject->TileRender()->SetSprite(4, 4, CAssetMgr::GetInst()->FindAsset<CSprite>(L"TileSprite_21"));
+
+	// 오브젝트를 0번 레이어에 추가
+	m_CurLevel->AddGameObject(pObject, 5, false);
+	*/
 
 	// 충돌 레이어 지정
 	CCollisionMgr::GetInst()->CollisionLayerCheck(3, 5);
@@ -185,4 +245,22 @@ void CLevelMgr::Progress()
 	m_CurLevel->Deregister();
 
 	m_CurLevel->FinalTick();
+}
+
+void CreatePlatform(wstring _Name, Vec3 _RelativePos, Vec3 _RelativeScale, CLevel* _CurLevel)
+{
+	CGameObject* pPlatform = new CGameObject;
+
+	pPlatform->SetName(_Name);
+
+	pPlatform->AddComponent(new CTransform);
+	pPlatform->AddComponent(new CCollider2D);
+	pPlatform->AddComponent(new CPlatformScript);
+
+	pPlatform->Transform()->SetRelativePos(_RelativePos);
+	pPlatform->Transform()->SetRelativeScale(_RelativeScale);
+
+	pPlatform->Collider2D()->SetIndependentScale(false);
+
+	_CurLevel->AddGameObject(pPlatform, 7, true);
 }

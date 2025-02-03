@@ -3,6 +3,7 @@
 
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
+#include "CLevelMgr.h"
 #include "CTransform.h"
 #include "CCamera.h"
 
@@ -60,19 +61,32 @@ void CCameraMoveScript::Move_Perspective()
 
 void CCameraMoveScript::Move_OrthoGraphic()
 {
-	Vec3 vRot = Vec3(0.f, 0.f, 0.f);
-	Transform()->SetRelativeRotation(vRot);
+	if(nullptr == m_Target)
+	{
+		Vec3 vRot = Vec3(0.f, 0.f, 0.f);
+		Transform()->SetRelativeRotation(vRot);
 
-	Vec3 vPos = Transform()->GetRelativePos();
+		Vec3 vPos = Transform()->GetRelativePos();
 
-	if (KEY_PRESSED(KEY::W))
-		vPos.y += DT * m_CamSpeed;
-	if (KEY_PRESSED(KEY::S))
-		vPos.y -= DT * m_CamSpeed;
-	if (KEY_PRESSED(KEY::A))
-		vPos.x -= DT * m_CamSpeed;
-	if (KEY_PRESSED(KEY::D))
-		vPos.x += DT * m_CamSpeed;
+		if (KEY_PRESSED(KEY::W))
+			vPos.y += DT * m_CamSpeed;
+		if (KEY_PRESSED(KEY::S))
+			vPos.y -= DT * m_CamSpeed;
+		if (KEY_PRESSED(KEY::A))
+			vPos.x -= DT * m_CamSpeed;
+		if (KEY_PRESSED(KEY::D))
+			vPos.x += DT * m_CamSpeed;
 
-	Transform()->SetRelativePos(vPos);
+		Transform()->SetRelativePos(vPos);
+	}
+
+	else
+	{
+		Vec3 vPos = Transform()->GetRelativePos();
+
+		vPos.x = m_Target->Transform()->GetRelativePos().x;
+		vPos.y = m_Target->Transform()->GetRelativePos().y;
+
+		Transform()->SetRelativePos(vPos);
+	}
 }

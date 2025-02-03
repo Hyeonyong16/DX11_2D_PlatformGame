@@ -15,7 +15,7 @@ CRigidbody::CRigidbody()
 	, m_bMove(false)
 	, m_GravityAccel(Vec2(0.f, -0.98f))
 	, m_JumpStack(1)
-	, m_MaxJumpStack(3)
+	, m_MaxJumpStack(1)
 	, m_JumpVelocity(Vec2(0.f, 0.25f))
 {
 }

@@ -164,6 +164,12 @@
     <ClInclude Include="CPlatformScript.h">
       <Filter>GameScripts\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="CDropTriggerScript.h">
+      <Filter>GameScripts\DropTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="CBackgroundScript.h">
+      <Filter>GameScripts\Background</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -310,6 +316,12 @@
     </ClCompile>
     <ClCompile Include="CPlatformScript.cpp">
       <Filter>GameScripts\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="CDropTriggerScript.cpp">
+      <Filter>GameScripts\DropTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="CBackgroundScript.cpp">
+      <Filter>GameScripts\Background</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -474,6 +486,12 @@
     </Filter>
     <Filter Include="GameScripts\Platform">
       <UniqueIdentifier>{f38524c6-10c7-48de-b7a6-00d09d6abf19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameScripts\DropTrigger">
+      <UniqueIdentifier>{f42aaec3-7fc3-4293-82bd-48be91d0ce4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameScripts\Background">
+      <UniqueIdentifier>{89f71802-e1d5-4899-81da-76bd69c2e5f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

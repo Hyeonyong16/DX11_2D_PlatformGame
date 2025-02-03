@@ -202,6 +202,7 @@ void CAssetMgr::CreateEngineSprite()
 	Vec2 SlicePixel = Vec2(120.f, 130.f);
 	int FrmCount = 10;
 
+	// ¾ÕÀ¸·Î ¶Ù±â
 	for (int i = 0; i < FrmCount; ++i)
 	{
 		pSprite = new CSprite;
@@ -226,6 +227,47 @@ void CAssetMgr::CreateEngineSprite()
 		AddAsset(szName, pSprite.Get());
 	}
 
+	// ¿ÞÂÊ
+	LeftTopPixel = Vec2(0.f, 650.f);
+	for (int i = 0; i < FrmCount; ++i)
+	{
+		pSprite = new CSprite;
+		pSprite->SetAtlasTex(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Link"));
+		if (nullptr == pSprite->GetAtlasTex())
+		{
+			Ptr<CTexture> pAtlas = CAssetMgr::GetInst()->Load<CTexture>(L"Link", L"Texture\\link.png");
+			pSprite->SetAtlasTex(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Link"));
+		}
+		pSprite->SetLeftTop(LeftTopPixel + Vec2(120.f * i, 0.f));
+		pSprite->SetSlice(SlicePixel);
+		pSprite->SetBackground(Vec2(300.f, 300.f));
+
+		wchar_t szName[255] = {};
+		swprintf_s(szName, 255, L"LinkSpriteLeft_%d", i);
+
+		AddAsset(szName, pSprite.Get());
+	}
+
+	// ¿À¸¥ÂÊ
+	LeftTopPixel = Vec2(0.f, 910.f);
+	for (int i = 0; i < FrmCount; ++i)
+	{
+		pSprite = new CSprite;
+		pSprite->SetAtlasTex(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Link"));
+		if (nullptr == pSprite->GetAtlasTex())
+		{
+			Ptr<CTexture> pAtlas = CAssetMgr::GetInst()->Load<CTexture>(L"Link", L"Texture\\link.png");
+			pSprite->SetAtlasTex(CAssetMgr::GetInst()->FindAsset<CTexture>(L"Link"));
+		}
+		pSprite->SetLeftTop(LeftTopPixel + Vec2(120.f * i, 0.f));
+		pSprite->SetSlice(SlicePixel);
+		pSprite->SetBackground(Vec2(300.f, 300.f));
+
+		wchar_t szName[255] = {};
+		swprintf_s(szName, 255, L"LinkSpriteRight_%d", i);
+
+		AddAsset(szName, pSprite.Get());
+	}
 
 	Ptr<CFlipbook> pFlipbook = new CFlipbook;
 	
@@ -237,6 +279,28 @@ void CAssetMgr::CreateEngineSprite()
 	}
 
 	AddAsset(L"LinkFlipbook", pFlipbook.Get());
+
+	Ptr<CFlipbook> pFlipbook1 = new CFlipbook;
+	// ¿ÞÂÊ
+	for (int i = 0; i < FrmCount; ++i)
+	{
+		wchar_t szName[255] = {};
+		swprintf_s(szName, 255, L"LinkSpriteLeft_%d", i);
+		pFlipbook1->AddSprite(FindAsset<CSprite>(szName));
+	}
+
+	AddAsset(L"LinkFlipbookLeft", pFlipbook1.Get());
+
+	Ptr<CFlipbook> pFlipbook2 = new CFlipbook;
+	// ¿À¸¥ÂÊ
+	for (int i = 0; i < FrmCount; ++i)
+	{
+		wchar_t szName[255] = {};
+		swprintf_s(szName, 255, L"LinkSpriteRight_%d", i);
+		pFlipbook2->AddSprite(FindAsset<CSprite>(szName));
+	}
+
+	AddAsset(L"LinkFlipbookRight", pFlipbook2.Get());
 
 	// Tile Sprite
 	Ptr<CTexture> pAtlas = CAssetMgr::GetInst()->Load<CTexture>(L"Tile", L"Texture\\TILE.bmp");

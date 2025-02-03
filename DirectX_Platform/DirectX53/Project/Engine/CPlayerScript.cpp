@@ -7,6 +7,7 @@
 
 #include "CTransform.h"
 #include "CRigidbody.h"
+#include "CFlipbookRender.h"
 #include "CKeyMgr.h"
 #include "CTimeMgr.h"
 #include "CTaskMgr.h"
@@ -42,6 +43,8 @@ void CPlayerScript::Tick()
 	if (KEY_PRESSED(KEY::DOWN))
 		vPos.y -= 100.f * DT;*/
 
+	
+
 	if (KEY_PRESSED(KEY::LEFT))
 		pRigid->AddForce(Vec2(-100.5f, 0.f), true);
 	if (KEY_PRESSED(KEY::RIGHT))
@@ -50,6 +53,14 @@ void CPlayerScript::Tick()
 		pRigid->Jump();
 	if (KEY_PRESSED(KEY::DOWN))
 		vPos.y -= 100.f * DT;
+
+	if (KEY_TAP(KEY::LEFT))
+		GetOwner()->FlipbookRender()->Play(1, 15, true);
+	if (KEY_TAP(KEY::RIGHT))
+		GetOwner()->FlipbookRender()->Play(2, 15, true);
+
+	if (KEY_RELEASED(KEY::LEFT) || KEY_RELEASED(KEY::RIGHT))
+		GetOwner()->FlipbookRender()->Play(0, 15, true);
 
 
 	if (KEY_PRESSED(KEY::Z))
